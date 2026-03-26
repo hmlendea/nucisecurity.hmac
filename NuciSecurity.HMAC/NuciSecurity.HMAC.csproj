@@ -4,7 +4,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <RootNamespace>NuciSecurity.HMAC</RootNamespace>
     <Version>4.1.2</Version>
-    <Description>HMAC Authentication</Description>
+    <Description>Library for generating and validating deterministic HMAC tokens from object instances.</Description>
     <Authors>Horațiu Mlendea</Authors>
     <Copyright>Copyright 2025 © Horațiu Mlendea</Copyright>
     <RepositoryUrl>https://github.com/hmlendea/nucisecurity</RepositoryUrl>
