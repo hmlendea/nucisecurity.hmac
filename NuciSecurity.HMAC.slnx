@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="NuciSecurity.HMAC/NuciSecurity.HMAC.csproj" />
+  <Project Path="NuciSecurity.HMAC.UnitTests/NuciSecurity.HMAC.UnitTests.csproj" />
+</Solution>
