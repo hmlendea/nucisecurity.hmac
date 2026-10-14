@@ -123,6 +123,10 @@ Run all tests using:
 dotnet test
 ```
 
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines on reporting issues, suggesting enhancements, and submitting code changes.
+
 ## License
 
 This project is licensed under the `GNU General Public License v3.0` or later. See [LICENSE](./LICENSE) for details.
