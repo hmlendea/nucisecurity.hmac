@@ -1,14 +1,27 @@
-[![Donate](https://img.shields.io/badge/-%E2%99%A5%20Donate-%23ff69b4)](https://hmlendea.go.ro/fund.html) [![Build Status](https://github.com/hmlendea/nucisecurity/actions/workflows/dotnet.yml/badge.svg)](https://github.com/hmlendea/nucisecurity/actions/workflows/dotnet.yml) [![Latest Release](https://img.shields.io/github/v/release/hmlendea/nucisecurity)](https://github.com/hmlendea/nucisecurity/releases/latest)
+[![Donate](https://img.shields.io/badge/-%E2%99%A5%20Donate-%23ff69b4)](https://hmlendea.go.ro/funding)
+[![Latest Release](https://img.shields.io/github/v/release/hmlendea/nucisecurity.hmac)](https://github.com/hmlendea/nucisecurity.hmac/releases/latest)
+[![Build Status](https://github.com/hmlendea/nucisecurity.hmac/actions/workflows/dotnet.yml/badge.svg)](https://github.com/hmlendea/nucisecurity.hmac/actions/workflows/dotnet.yml)
+[![NuGet](https://img.shields.io/nuget/v/NuciSecurity.HMAC)](https://nuget.org/packages/NuciSecurity.HMAC)
+[![License](https://img.shields.io/github/license/hmlendea/nucisecurity.hmac)](https://github.com/hmlendea/nucisecurity.hmac/blob/master/LICENSE)
 
 # NuciSecurity.HMAC
 
-## About
+`NuciSecurity.HMAC` is a .NET library for generating and validating deterministic HMAC tokens from object instances. It is designed for integrity and authenticity checks between trusted parties that share the same secret key (for example signed API requests, callbacks/webhooks, and anti-tampering checks for DTO payloads).
 
-`NuciSecurity.HMAC` is a .NET library for generating and validating deterministic HMAC tokens from object instances.
+## 📑 Table of Contents
 
-It is designed for integrity and authenticity checks between trusted parties that share the same secret key (for example signed API requests, callbacks/webhooks, and anti-tampering checks for DTO payloads).
+- [Capabilities](#-capabilities)
+- [Usage](#-usage)
+- [Installation](#-installation)
+- [Development](#️-development)
+- [Architecture](#️-architecture)
+- [Contributing](#-contributing)
+- [Code of Conduct](#-code-of-conduct)
+- [Security](#-security)
+- [License](#-license)
+- [Project Engagement](#-project-engagement)
 
-## Features
+## ✨ Capabilities
 
 - Deterministic token generation from object properties
 - Token validation through boolean and exception-based APIs
@@ -17,21 +30,7 @@ It is designed for integrity and authenticity checks between trusted parties tha
 - Recursive support for collections of complex objects
 - Stable formatting for values like `DateTime`, `bool`, and `null`
 
-## Installation
-
-[![Get it from NuGet](https://raw.githubusercontent.com/hmlendea/readme-assets/master/badges/stores/nuget.png)](https://nuget.org/packages/NuciSecurity.HMAC)
-
-### NET CLI
-```bash
-dotnet add package NuciSecurity.HMAC
-```
-
-### Package Manager
-```powershell
-Install-Package NuciSecurity.HMAC
-```
-
-## Quick Start
+## 🚀 Usage
 
 ```csharp
 using NuciSecurity.HMAC;
@@ -40,10 +39,10 @@ string sharedSecret = "super-secret-key";
 
 var payload = new PaymentRequest
 {
-		MerchantId = "merchant-42",
-		Amount = 125.50m,
-		Currency = "EUR",
-		NonSignedMetadata = "ignore-me"
+    MerchantId = "merchant-42",
+    Amount = 125.50m,
+    Currency = "EUR",
+    NonSignedMetadata = "ignore-me"
 };
 
 // Generate a token to transmit with the payload
@@ -57,67 +56,56 @@ HmacValidator.Validate(token, payload, sharedSecret);
 
 public sealed class PaymentRequest
 {
-		[HmacOrder(1)]
-		public string MerchantId { get; set; }
+    [HmacOrder(1)]
+    public string MerchantId { get; set; }
 
-		[HmacOrder(2)]
-		public decimal Amount { get; set; }
+    [HmacOrder(2)]
+    public decimal Amount { get; set; }
 
-		[HmacOrder(3)]
-		public string Currency { get; set; }
+    [HmacOrder(3)]
+    public string Currency { get; set; }
 
-		[HmacIgnore]
-		public string NonSignedMetadata { get; set; }
+    [HmacIgnore]
+    public string NonSignedMetadata { get; set; }
 }
 ```
 
-## API Overview
+## 📦 Installation
 
-- `HmacEncoder.GenerateToken<T>(T obj, string sharedSecretKey)`
-	- Creates a token from object content and secret key.
-	- Throws if `obj` is null.
-	- Throws if `sharedSecretKey` is null, empty, or whitespace.
+[![Obtain it from NuGet](https://raw.githubusercontent.com/hmlendea/readme-assets/master/badges/stores/nuget.png)](https://nuget.org/packages/NuciSecurity.HMAC)
 
-- `HmacValidator.IsTokenValid<T>(string expectedToken, T obj, string sharedSecretKey)`
-	- Returns `false` if `expectedToken` is null, empty, or whitespace.
-	- Otherwise generates a new token and compares it with `expectedToken`.
+### Package Manager Installation
 
-- `HmacValidator.Validate<T>(string expectedToken, T obj, string sharedSecretKey)`
-	- Throws `SecurityException` when the token is invalid.
+```bash
+dotnet add package NuciSecurity.HMAC
+```
 
-- `HmacIgnoreAttribute`
-	- Excludes a property from the token input.
+Or, via the `Package Manager Console`:
+```powershell
+Install-Package NuciSecurity.HMAC
+```
 
-- `HmacOrderAttribute(int order)`
-	- Defines property processing order during token generation.
+## 🛠️ Development
 
-Note: `HmacEncoder.IsTokenValid(...)` is obsolete. Prefer `HmacValidator.IsTokenValid(...)`.
+### Requirements
 
-## Behaviour Notes
+- [.NET 10.0 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
 
-- Token generation is deterministic for identical object values and shared secret.
-- Property order impacts the resulting token.
-	- Properties with `[HmacOrder]` are processed first by order value.
-	- Remaining public instance properties are processed alphabetically by name.
-- `[HmacIgnore]` properties are excluded.
-- Value normalization details:
-	- `DateTime` uses the round-trip format (`"O"`).
-	- `bool` is lowercased (`"true"` / `"false"`).
-	- `null` is represented through an internal marker.
-- Collections:
-	- Collections of complex objects are processed recursively.
-	- Collections of scalar/simple values are flattened in sequence order.
-- Validation is an exact string comparison between expected and generated token.
+### Setup
 
-## Target Framework
+```bash
+git clone https://github.com/hmlendea/nucisecurity.hmac.git
+cd nucisecurity.hmac
+dotnet restore
+```
 
-The package currently targets `.NET 10.0`.
+### Build
 
-## Testing
+```bash
+dotnet build
+```
 
-Unit tests are available in the `NuciSecurity.HMAC.UnitTests` project.
-
-Run all tests using:
+### Test
 
 ```bash
 dotnet test
@@ -125,15 +113,29 @@ dotnet test
 
 ## 🏗️ Architecture
 
-See [ARCHITECTURE.md](./ARCHITECTURE.md) for the current architecture, component structure, data flows, and design decisions.
+NuciSecurity.HMAC provides deterministic HMAC token generation and validation for .NET applications.
+
+See the [architecture documentation](./ARCHITECTURE.md) for the system context, principal components, runtime flows, ownership boundaries, dependencies, constraints, and extension points.
+
+## 🤝 Contributing
+
+You are welcome to submit any suggestion, feedback, or modification to this project.
+
+When doing so, please:
+- Maintain cross-platform compatibility
+- Preserve the existing public contract unless a breaking change is intentional
+- Submit focused pull requests that conform to the existing code style
+- Maintain your branch synchronised with `master`
+- Revise the documentation when functionality changes
+- Properly test all modifications, including edge cases and error conditions
+- Include tests for additional or modified functionality
+- Raise a new [issue](https://github.com/hmlendea/nucisecurity.hmac/issues) for problems or suggestions
+
+See the [contributing guidelines](./CONTRIBUTING.md) for details on how to report issues, suggest enhancements, and submit changes.
 
 ## 📜 Code of Conduct
 
-All participants are expected to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
-
-## Contributing
-
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines on reporting issues, suggesting enhancements, and submitting code changes.
+See the [Code of Conduct](./CODE_OF_CONDUCT.md) for the standards of conduct expected in all project spaces.
 
 ## 🔒 Security
 
@@ -141,6 +143,15 @@ NuciSecurity.HMAC follows a coordinated disclosure policy for security vulnerabi
 
 For information on reporting security vulnerabilities, see [SECURITY.md](./SECURITY.md).
 
-## License
+## 📄 License
 
-This project is licensed under the `GNU General Public License v3.0` or later. See [LICENSE](./LICENSE) for details.
+This project is being distributed under the `GNU General Public License v3.0` or later.
+See [LICENSE](./LICENSE) for additional information.
+
+## 💝 Project Engagement
+
+Discovered a problem or have a suggestion? [Open an issue](https://github.com/hmlendea/nucisecurity.hmac/issues)!
+
+If you find this project useful, consider [funding it](https://hmlendea.go.ro/funding) or starring ⭐️ it on GitHub!
+
+[![Donate](https://raw.githubusercontent.com/hmlendea/readme-assets/master/donate_generic.png)](https://hmlendea.go.ro/funding)
