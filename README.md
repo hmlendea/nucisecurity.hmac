@@ -123,6 +123,10 @@ Run all tests using:
 dotnet test
 ```
 
+## 🏗️ Architecture
+
+See [ARCHITECTURE.md](./ARCHITECTURE.md) for the current architecture, component structure, data flows, and design decisions.
+
 ## Contributing
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines on reporting issues, suggesting enhancements, and submitting code changes.
