@@ -85,7 +85,7 @@ All participants are expected to follow the [Code of Conduct](CODE_OF_CONDUCT.md
 
 ## 🔒 Security
 
-Report security vulnerabilities per the [Security Policy](docs/security.md).
+Report security vulnerabilities per the [Security Policy](SECURITY.md).
 
 ## 📄 License
 

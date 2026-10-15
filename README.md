@@ -135,6 +135,12 @@ All participants are expected to follow the [Code of Conduct](CODE_OF_CONDUCT.md
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines on reporting issues, suggesting enhancements, and submitting code changes.
 
+## 🔒 Security
+
+NuciSecurity.HMAC follows a coordinated disclosure policy for security vulnerabilities.
+
+For information on reporting security vulnerabilities, see [SECURITY.md](./SECURITY.md).
+
 ## License
 
 This project is licensed under the `GNU General Public License v3.0` or later. See [LICENSE](./LICENSE) for details.
