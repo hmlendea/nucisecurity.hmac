@@ -127,6 +127,10 @@ dotnet test
 
 See [ARCHITECTURE.md](./ARCHITECTURE.md) for the current architecture, component structure, data flows, and design decisions.
 
+## 📜 Code of Conduct
+
+All participants are expected to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
+
 ## Contributing
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines on reporting issues, suggesting enhancements, and submitting code changes.
