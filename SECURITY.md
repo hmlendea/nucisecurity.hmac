@@ -1,4 +1,16 @@
-# Security
+# Security Policy
+
+This document describes the security policy for NuciSecurity.HMAC, including supported versions, vulnerability reporting, scope, disclosure practices, and automated scanning.
+
+## 📑 Table of Contents
+
+- [Supported Versions](#-supported-versions)
+- [Reporting a Vulnerability](#-reporting-a-vulnerability)
+- [Scope](#-scope)
+- [Disclosure Policy](#-disclosure-policy)
+- [Automated Security Scanning](#-automated-security-scanning)
+- [Safe Harbour](#-safe-harbour)
+- [Recognition](#-recognition)
 
 ## 🛡️ Supported Versions
 
@@ -23,6 +35,8 @@ To report a vulnerability:
 
 ## 📌 Scope
 
+The original maintainers are not responsible for changes, modifications, or security issues introduced by downstream forks.
+
 The subsequent report categories are in scope for this repository:
 - HMAC token generation and validation
 - Property attribute configuration ([HmacOrder], [HmacIgnore])
@@ -39,12 +53,18 @@ This project follows coordinated disclosure:
 3. Public disclosure is published after a fix, mitigation, or agreed risk decision is available.
 4. Credit is attributed in accordance with reporter preference and project policy.
 
-<!-- Only if a safe-harbour statement is available. -->
+## 🔍 Automated Security Scanning
+
+This repository runs automated security scans via GitHub Actions. The scan includes:
+- **Dependency vulnerability scanning** — `dotnet list package --vulnerable --include-transitive` checks all direct and transitive NuGet dependencies for known vulnerabilities
+- **CodeQL static analysis** — GitHub's CodeQL engine analyses the C# codebase for security issues including injection flaws, insecure configurations, and other code-level vulnerabilities
+
+Results are published to the [Security](https://github.com/hmlendea/nucisecurity.hmac/security) tab and the [Actions](https://github.com/hmlendea/nucisecurity.hmac/actions/workflows/security.yml) workflow page.
+
 ## 🧾 Safe Harbour
 
-If your research is conducted in good faith, confined to authorised scope, and disclosed responsibly, the maintainers will not pursue action for policy-compliant activity.
+If your investigation is conducted in good faith, confined to authorised scope, and disclosed responsibly, the maintainers will not pursue action for policy-compliant activity.
 
-<!-- Only if public recognition is practised. -->
 ## 🙏 Recognition
 
 We appreciate responsible disclosure. Reporters who desire public attribution may be acknowledged in release notes, advisories, or a dedicated acknowledgements section.

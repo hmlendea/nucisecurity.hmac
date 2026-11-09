@@ -285,3 +285,18 @@ public void IgnoredPropertyChangeDoesNotAffectToken()
 - [Error Handling](../error-handling.md)
 - [Invariants](../invariants.md)
 - [Root SECURITY.md](../SECURITY.md)
+
+## Automated Security Scanning
+
+This repository uses automated security scanning via GitHub Actions:
+
+- **Security Scan Workflow** (`.github/workflows/security.yml`) runs on:
+  - Every push to `master`
+  - Every pull request targeting `master`
+  - Weekly schedule (Sundays at 00:00 UTC)
+
+The workflow performs:
+1. **Dependency vulnerability scanning** — `dotnet list package --vulnerable --include-transitive` checks all direct and transitive NuGet dependencies for known vulnerabilities
+2. **CodeQL static analysis** — GitHub's CodeQL engine analyses the C# codebase for security issues including injection flaws, insecure configurations, and other code-level vulnerabilities
+
+Results are published to the **Security** tab of this repository under **Code scanning alerts**.
