@@ -506,6 +506,7 @@ Not supported. HMAC-SHA512 is hardcoded. Changing requires library modification 
 | Test Project Configuration | `NuciSecurity.HMAC.UnitTests/NuciSecurity.HMAC.UnitTests.csproj` |
 | Solution | `NuciSecurity.HMAC.slnx` |
 | CI/CD | `.github/workflows/dotnet.yml` |
+| Security Scan | `.github/workflows/security.yml` |
 
 ## 📚 Related Documentation
 

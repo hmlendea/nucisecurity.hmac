@@ -1,6 +1,7 @@
 [![Donate](https://img.shields.io/badge/-%E2%99%A5%20Donate-%23ff69b4)](https://hmlendea.go.ro/funding)
 [![Latest Release](https://img.shields.io/github/v/release/hmlendea/nucisecurity.hmac)](https://github.com/hmlendea/nucisecurity.hmac/releases/latest)
 [![Build Status](https://github.com/hmlendea/nucisecurity.hmac/actions/workflows/dotnet.yml/badge.svg)](https://github.com/hmlendea/nucisecurity.hmac/actions/workflows/dotnet.yml)
+[![Security Status](https://github.com/hmlendea/nucisecurity.hmac/actions/workflows/security.yml/badge.svg)](https://github.com/hmlendea/nucisecurity.hmac/actions/workflows/security.yml)
 [![NuGet](https://img.shields.io/nuget/v/NuciSecurity.HMAC)](https://nuget.org/packages/NuciSecurity.HMAC)
 [![License](https://img.shields.io/github/license/hmlendea/nucisecurity.hmac)](https://github.com/hmlendea/nucisecurity.hmac/blob/master/LICENSE)
 
@@ -141,7 +142,7 @@ See the [Code of Conduct](./CODE_OF_CONDUCT.md) for the standards of conduct exp
 
 NuciSecurity.HMAC follows a coordinated disclosure policy for security vulnerabilities.
 
-For information on reporting security vulnerabilities, see [SECURITY.md](./SECURITY.md).
+For information on reporting security vulnerabilities, see the [Security Policy](./SECURITY.md).
 
 ## 📄 License
 
