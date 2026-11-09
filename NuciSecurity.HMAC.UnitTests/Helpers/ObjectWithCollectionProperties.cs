@@ -4,8 +4,8 @@ namespace NuciSecurity.HMAC.UnitTests.Helpers
 {
     public sealed class ObjectWithCollectionProperties
     {
-        public List<ObjectWithIgnoreAttributes> Collection { get; set; }
+        public List<ObjectWithIgnoreAttributes>? Collection { get; set; }
 
-        public string Text { get; set; }
+        public string? Text { get; set; }
     }
 }

@@ -74,12 +74,12 @@ namespace NuciSecurity.HMAC
 
             foreach (PropertyInfo property in propertiesToCompute)
             {
-                var propertyValue = property.GetValue(obj);
+                object? propertyValue = property.GetValue(obj);
                 string value;
 
                 if (propertyValue is IEnumerable enumerable && propertyValue is not string)
                 {
-                    Type elementType = property.PropertyType.IsGenericType
+                    Type? elementType = property.PropertyType.IsGenericType
                         ? property.PropertyType.GetGenericArguments()[0]
                         : property.PropertyType.GetElementType();
 

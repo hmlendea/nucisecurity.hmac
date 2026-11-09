@@ -1,10 +1,12 @@
 using System.Collections.Generic;
+
 using NuciSecurity.HMAC.UnitTests.Helpers;
+
 using NUnit.Framework;
 
 namespace NuciSecurity.HMAC.UnitTests
 {
-    public class DateTimeExtensionsTests
+    public sealed class HmacEncoderTests
     {
         static string DummySharedSecretKey => "123DummySharedSecretKeyForTesting!";
 

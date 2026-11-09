@@ -11,6 +11,8 @@
 | `Moq` | 4.20.72 | Mocking framework (test project only) | BSD-3-Clause |
 | `NUnit` | 4.5.1 | Test framework (test project only) | MIT |
 | `NUnit3TestAdapter` | 6.2.0 | NUnit adapter for VS (test project only) | MIT |
+| `Microsoft.CodeAnalysis.CSharp` | 5.0.0 | Roslyn syntax analysis (architecture test project only) | MIT |
+| `TngTech.ArchUnitNET.NUnit` | 0.13.5 | Compiled dependency rules (architecture test project only) | Apache-2.0 |
 
 ### Framework Dependencies
 
@@ -29,6 +31,9 @@
 
 ```
 NuciSecurity.HMAC.UnitTests
+    └── NuciSecurity.HMAC (ProjectReference)
+
+NuciSecurity.HMAC.ArchitectureTests
     └── NuciSecurity.HMAC (ProjectReference)
 ```
 
@@ -111,6 +116,22 @@ HmacOrderAttribute
   <PackageReference Include="Moq" Version="4.20.72" />
   <PackageReference Include="NUnit" Version="4.5.1" />
   <PackageReference Include="NUnit3TestAdapter" Version="6.2.0" />
+</ItemGroup>
+
+<ItemGroup>
+  <ProjectReference Include="..\NuciSecurity.HMAC\NuciSecurity.HMAC.csproj" />
+</ItemGroup>
+```
+
+### NuciSecurity.HMAC.ArchitectureTests.csproj
+
+```xml
+<ItemGroup>
+  <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />
+  <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.3.0" />
+  <PackageReference Include="NUnit" Version="4.5.1" />
+  <PackageReference Include="NUnit3TestAdapter" Version="6.2.0" />
+  <PackageReference Include="TngTech.ArchUnitNET.NUnit" Version="0.13.5" />
 </ItemGroup>
 
 <ItemGroup>

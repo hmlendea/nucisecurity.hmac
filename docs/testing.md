@@ -2,13 +2,22 @@
 
 ## Overview
 
-NuciSecurity.HMAC uses **NUnit 4.5.1** for unit testing with **7 test cases** covering all major functionality. All tests pass (7/7).
+NuciSecurity.HMAC uses **NUnit 4.5.1** for unit testing with **7 test cases** covering all major functionality, and **NUnit + ArchUnit.NET + Roslyn** for architecture testing with **56 test cases** enforcing the documented architectural boundaries and file conventions.
 
 ## Test Strategy
 
 ### Test Pyramid
 
 ```
+┌───────────────────────────┐
+│  Architecture Tests (56)  │  - NuciSecurity.HMAC.ArchitectureTests
+│  ┌──────────────────────┐ │
+│  │ Dependency Boundaries│ │
+│  │ Source Conventions   │ │
+│  │ Project Conventions  │ │
+│  │ Solution Conventions │ │
+│  └──────────────────────┘ │
+└───────────────────────────┘
 ┌─────────────────┐
 │  Unit Tests     │  (7 tests) - NuciSecurity.HMAC.UnitTests
 │  ┌─────────────┐ │
@@ -30,6 +39,7 @@ NuciSecurity.HMAC uses **NUnit 4.5.1** for unit testing with **7 test cases** co
 | HmacValidator | 3 | 100% |
 | Attributes | 0 (tested via components) | N/A |
 | Error handling | 7 (via exceptions) | 100% |
+| Architecture boundaries | 56 | Documented rules only |
 
 ## Test Organization
 
@@ -45,6 +55,16 @@ NuciSecurity.HMAC.UnitTests/
 │   ├── ObjectWithIgnoreAttributes.cs
 │   └── ObjectWithOrderAttributes.cs
 └── obj/ (generated)
+
+NuciSecurity.HMAC.ArchitectureTests/
+├── DependencyBoundaryTests.cs
+├── SourceFileConventionTests.cs
+├── ProjectConventionTests.cs
+├── SolutionConventionTests.cs
+├── ProductionArchitecture.cs
+├── ArchitectureResources.cs
+├── NuciSecurity.HMAC.ArchitectureTests.csproj
+└── obj/ (generated)
 ```
 
 ### Test Categories
@@ -52,6 +72,18 @@ NuciSecurity.HMAC.UnitTests/
 1. **Token Generation Tests** (4 cases)
 2. **Token Validation Tests** (3 cases)
 3. **Error Handling Tests** (7 cases via exceptions)
+4. **Architecture Tests** (56 cases)
+
+### Architecture Test Fixtures
+
+| Fixture | Purpose | Mechanism |
+|---------|---------|-----------|
+| `DependencyBoundaryTests` | Assembly references, public API surface, dependency direction, statelessness | ArchUnit.NET + metadata reflection |
+| `SourceFileConventionTests` | One type per file, filename/type match, block namespaces, no regions, no nullable directives | Roslyn syntax analysis |
+| `ProjectConventionTests` | Required project properties, alphabetical package references, test flags, project references, no `InternalsVisibleTo` | XML parsing |
+| `SolutionConventionTests` | SDK-style solution structure, project ordering, no XML declaration, no `Version` element | XML parsing |
+
+The architecture tests load the production assembly explicitly, exclude test assemblies, and reuse the loaded architecture for the whole run. Production sources and project files are embedded as resources so the checks are deterministic, environment-agnostic, and machine-agnostic.
 
 ## Test Framework Configuration
 
@@ -268,7 +300,8 @@ public class ObjectWithCollectionProperties
 dotnet test
 
 # Run specific test project
-NuciSecurity.HMAC.UnitTests/bin/Debug/net10.0/NuciSecurity.HMAC.UnitTests.dll
+dotnet test NuciSecurity.HMAC.UnitTests/NuciSecurity.HMAC.UnitTests.csproj
+dotnet test NuciSecurity.HMAC.ArchitectureTests/NuciSecurity.HMAC.ArchitectureTests.csproj
 ```
 
 ### Test Results
@@ -277,8 +310,8 @@ NuciSecurity.HMAC.UnitTests/bin/Debug/net10.0/NuciSecurity.HMAC.UnitTests.dll
 Test run started: 2026-01-15 10:30:00Z
 Test run completed: 2026-01-15 10:30:05Z
 
-Total tests: 7
-Passed: 7
+Total tests: 63
+Passed: 63
 Failed: 0
 Skipped: 0
 Time: 5.123 seconds
@@ -315,11 +348,19 @@ Time: 5.123 seconds
 4. **Use descriptive test names**
 5. **Include assertions for all expected outcomes**
 
+### Adding New Architecture Tests
+
+1. **Place dependency rules in `DependencyBoundaryTests`, source rules in `SourceFileConventionTests`, project rules in `ProjectConventionTests`, and solution rules in `SolutionConventionTests`**
+2. **Assert that every rule selects at least one element** so that no rule passes vacuously
+3. **Keep the checks independent of the host OS, machine, locale, timezone, clock, and filesystem layout**
+4. **Read production sources and project files through `ArchitectureResources`** so the inputs are deterministic
+
 ### Test Coverage Gaps
 
 - **Integration tests**: Not implemented (out of scope)
 - **Performance tests**: Not implemented (out of scope)
 - **Fuzzing**: Not implemented (out of scope)
+- **Public API baseline**: The public surface is checked for namespace membership, but removals are not detected against a versioned baseline
 
 ## Related
 

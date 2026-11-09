@@ -1,0 +1,50 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>NuciSecurity.HMAC.ArchitectureTests</RootNamespace>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <ExcludeFromCodeCoverage>true</ExcludeFromCodeCoverage>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.11.0" />
+    <PackageReference Include="NUnit" Version="5.0.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="6.3.1" />
+    <PackageReference Include="TngTech.ArchUnitNET.NUnit" Version="0.13.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../NuciSecurity.HMAC/NuciSecurity.HMAC.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="../NuciSecurity.HMAC/**/*.cs" Exclude="../NuciSecurity.HMAC/bin/**/*.cs;../NuciSecurity.HMAC/obj/**/*.cs">
+      <LogicalName>ProductionSources/%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="../NuciSecurity.HMAC.UnitTests/**/*.cs" Exclude="../NuciSecurity.HMAC.UnitTests/bin/**/*.cs;../NuciSecurity.HMAC.UnitTests/obj/**/*.cs">
+      <LogicalName>UnitTestSources/%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="../NuciSecurity.HMAC.ArchitectureTests/**/*.cs" Exclude="../NuciSecurity.HMAC.ArchitectureTests/bin/**/*.cs;../NuciSecurity.HMAC.ArchitectureTests/obj/**/*.cs">
+      <LogicalName>ArchitectureTestSources/%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="../NuciSecurity.HMAC.slnx">
+      <LogicalName>ProjectFiles/NuciSecurity.HMAC.slnx</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="../NuciSecurity.HMAC/NuciSecurity.HMAC.csproj">
+      <LogicalName>ProjectFiles/NuciSecurity.HMAC/NuciSecurity.HMAC.csproj</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="../NuciSecurity.HMAC.UnitTests/NuciSecurity.HMAC.UnitTests.csproj">
+      <LogicalName>ProjectFiles/NuciSecurity.HMAC.UnitTests/NuciSecurity.HMAC.UnitTests.csproj</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="../NuciSecurity.HMAC.ArchitectureTests/NuciSecurity.HMAC.ArchitectureTests.csproj">
+      <LogicalName>ProjectFiles/NuciSecurity.HMAC.ArchitectureTests/NuciSecurity.HMAC.ArchitectureTests.csproj</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>
