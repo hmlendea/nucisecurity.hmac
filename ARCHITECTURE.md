@@ -194,6 +194,32 @@ Boundary rules:
 - Uses NUnit 4.x + Moq
 - No `InternalsVisibleTo`; tests only exercise public API
 
+### Architecture Tests
+
+Paths:
+- `NuciSecurity.HMAC.ArchitectureTests/DependencyBoundaryTests.cs`
+- `NuciSecurity.HMAC.ArchitectureTests/SourceFileConventionTests.cs`
+- `NuciSecurity.HMAC.ArchitectureTests/ProjectConventionTests.cs`
+- `NuciSecurity.HMAC.ArchitectureTests/SolutionConventionTests.cs`
+- `NuciSecurity.HMAC.ArchitectureTests/CodingConventionTests.cs`
+- `NuciSecurity.HMAC.ArchitectureTests/NamingConventionTests.cs`
+- `NuciSecurity.HMAC.ArchitectureTests/MemberOrganisationTests.cs`
+- `NuciSecurity.HMAC.ArchitectureTests/TypeDeclarationConventionTests.cs`
+- `NuciSecurity.HMAC.ArchitectureTests/ProductionArchitecture.cs`
+- `NuciSecurity.HMAC.ArchitectureTests/ArchitectureResources.cs`
+
+Responsibilities:
+- Verify the documented dependency boundaries and public API surface
+- Verify the stateless design (no mutable instance or static state)
+- Verify source-file, project-file, and solution-file conventions
+
+Boundary rules:
+- Test project references main project via `ProjectReference`
+- Uses NUnit + ArchUnit.NET (compiled dependencies) + Roslyn (source conventions)
+- Loads the production assembly explicitly and excludes test assemblies
+- Reads production sources and project files from embedded resources, so the checks are deterministic and machine-agnostic
+- Every rule asserts that its selector is non-empty, so no rule passes vacuously
+
 ## 💾 Data Architecture
 
 ```mermaid
@@ -435,6 +461,16 @@ The test project `NuciSecurity.HMAC.UnitTests` verifies:
 - Validation paths: valid token, invalid token, null/empty token, null object, null secret
 - Obsolete `HmacEncoder.IsTokenValid` delegation to `HmacValidator`
 
+The architecture test project `NuciSecurity.HMAC.ArchitectureTests` verifies:
+- The production assembly references only the documented assemblies
+- The public API surface stays within the documented namespace and types
+- The validator depends on the encoder, and the token generation path does not depend on the validator
+- The library declares no mutable instance or static state
+- Every handwritten source file declares exactly one type matching its file name
+- Production sources use block namespaces and no regions or nullable directives
+- The project files declare the required properties and the test flags
+- The solution file uses the SDK-style structure and the documented project order
+
 Execute the principal automated verification with:
 
 ```bash
@@ -502,8 +538,10 @@ Not supported. HMAC-SHA512 is hardcoded. Changing requires library modification 
 | Internal Implementation | `NuciSecurity.HMAC/HmacEncoder.cs` (private static members) |
 | Unit Tests | `NuciSecurity.HMAC.UnitTests/HmacEncoderTests.cs` |
 | Test Helpers | `NuciSecurity.HMAC.UnitTests/Helpers/*.cs` |
+| Architecture Tests | `NuciSecurity.HMAC.ArchitectureTests/*.cs` |
 | Project Configuration | `NuciSecurity.HMAC/NuciSecurity.HMAC.csproj` |
 | Test Project Configuration | `NuciSecurity.HMAC.UnitTests/NuciSecurity.HMAC.UnitTests.csproj` |
+| Architecture Test Project Configuration | `NuciSecurity.HMAC.ArchitectureTests/NuciSecurity.HMAC.ArchitectureTests.csproj` |
 | Solution | `NuciSecurity.HMAC.slnx` |
 | CI/CD | `.github/workflows/dotnet.yml` |
 | Security Scan | `.github/workflows/security.yml` |

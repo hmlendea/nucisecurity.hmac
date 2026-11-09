@@ -53,6 +53,14 @@ nucisecurity.hmac/
 │   ├── HmacOrderAttribute.cs
 │   ├── HmacValidator.cs
 │   └── NuciSecurity.HMAC.csproj
+├── NuciSecurity.HMAC.ArchitectureTests/
+│   ├── DependencyBoundaryTests.cs
+│   ├── SourceFileConventionTests.cs
+│   ├── ProjectConventionTests.cs
+│   ├── SolutionConventionTests.cs
+│   ├── ProductionArchitecture.cs
+│   ├── ArchitectureResources.cs
+│   └── NuciSecurity.HMAC.ArchitectureTests.csproj
 └── NuciSecurity.HMAC.UnitTests/
     ├── HmacEncoderTests.cs
     ├── NuciSecurity.HMAC.UnitTests.csproj
@@ -62,8 +70,6 @@ nucisecurity.hmac/
         ├── ObjectWithIgnoreAttributes.cs
         └── ObjectWithOrderAttributes.cs
 ```
-
-## Module Organization
 
 ### NuciSecurity.HMAC (Main Library)
 
@@ -99,6 +105,24 @@ NuciSecurity.HMAC.UnitTests/
 - Test helper objects for attribute scenarios
 - NUnit 4.5.1 test framework
 
+### NuciSecurity.HMAC.ArchitectureTests (Architecture Test Project)
+
+```
+NuciSecurity.HMAC.ArchitectureTests/
+├── DependencyBoundaryTests.cs      # ArchUnit.NET dependency rules
+├── SourceFileConventionTests.cs    # Roslyn source convention rules
+├── ProjectConventionTests.cs       # Project file convention rules
+├── SolutionConventionTests.cs      # Solution file convention rules
+├── ProductionArchitecture.cs       # Loaded production architecture
+├── ArchitectureResources.cs        # Embedded project and source resources
+└── NuciSecurity.HMAC.ArchitectureTests.csproj
+```
+
+**Responsibilities**:
+- Enforce the documented dependency boundaries and public API surface
+- Enforce source, project, and solution file conventions
+- Fail on any deviation from the documented architecture
+
 ## File Descriptions
 
 ### Core Library Files
@@ -119,6 +143,17 @@ NuciSecurity.HMAC.UnitTests/
 | `ObjectWithOrderAttributes.cs` | Test `[HmacOrder]` |
 | `ObjectWithCollectionProperties.cs` | Test collections |
 | `ObjectWithDifferentOrderAttributes.cs` | Test order variations |
+
+### Architecture Test Files
+
+| File | Purpose |
+|------|---------|
+| `DependencyBoundaryTests.cs` | ArchUnit.NET rules for assembly, namespace, and state boundaries |
+| `SourceFileConventionTests.cs` | Roslyn rules for type-per-file, namespaces, regions, and nullable directives |
+| `ProjectConventionTests.cs` | Rules for required project properties, package ordering, and references |
+| `SolutionConventionTests.cs` | Rules for the SDK-style solution file structure |
+| `ProductionArchitecture.cs` | Explicitly loads the production assembly and reuses the model |
+| `ArchitectureResources.cs` | Resolves embedded project and source resources deterministically |
 
 ### Documentation Files
 

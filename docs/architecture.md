@@ -40,6 +40,14 @@ NuciSecurity.HMAC (net10.0)
 NuciSecurity.HMAC.UnitTests (net10.0)
 ├── HmacEncoderTests.cs     # Encoder tests
 └── Helpers/                # Test object models
+
+NuciSecurity.HMAC.ArchitectureTests (net10.0)
+├── DependencyBoundaryTests.cs      # ArchUnit.NET dependency rules
+├── SourceFileConventionTests.cs    # Roslyn source convention rules
+├── ProjectConventionTests.cs       # Project file convention rules
+├── SolutionConventionTests.cs      # Solution file convention rules
+├── ProductionArchitecture.cs       # Loaded production architecture
+└── ArchitectureResources.cs        # Embedded project and source resources
 ```
 
 ## Component Interaction Diagram

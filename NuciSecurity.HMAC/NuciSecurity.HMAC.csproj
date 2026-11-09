@@ -3,6 +3,10 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <RootNamespace>NuciSecurity.HMAC</RootNamespace>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <IsPackable>true</IsPackable>
     <Version>4.1.4</Version>
     <Description>Library for generating and validating deterministic HMAC tokens from object instances.</Description>
     <Authors>Horațiu Mlendea</Authors>

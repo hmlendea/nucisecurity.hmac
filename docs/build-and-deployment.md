@@ -40,9 +40,11 @@ NuciSecurity.HMAC/bin/Debug/net10.0/
 ## Solution Structure
 
 ```
-NuciExtensions.sln
+NuciSecurity.HMAC.slnx
 ├── NuciSecurity.HMAC/
 │   └── NuciSecurity.HMAC.csproj
+├── NuciSecurity.HMAC.ArchitectureTests/
+│   └── NuciSecurity.HMAC.ArchitectureTests.csproj
 └── NuciSecurity.HMAC.UnitTests/
     └── NuciSecurity.HMAC.UnitTests.csproj
 ```
@@ -55,15 +57,14 @@ NuciExtensions.sln
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <RootNamespace>NuciSecurity.HMAC</RootNamespace>
+    <ImplicitUsings>disable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Nullable>enable</Nullable>
+    <IsPackable>true</IsPackable>
 
     <!-- Package metadata -->
-    <Version>4.1.3</Version>
+    <Version>4.1.4</Version>
     <Description>Library for generating and validating deterministic HMAC tokens from object instances.</Description>
     <Authors>Horațiu Mlendea</Authors>
     <Copyright>Copyright 2026 © Horațiu Mlendea</Copyright>
@@ -84,11 +85,13 @@ NuciExtensions.sln
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <RootNamespace>NuciSecurity.HMAC.UnitTests</RootNamespace>
+    <ImplicitUsings>disable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <ExcludeFromCodeCoverage>true</ExcludeFromCodeCoverage>
   </PropertyGroup>
 
   <ItemGroup>
@@ -96,6 +99,35 @@ NuciExtensions.sln
     <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="NUnit" Version="4.5.1" />
     <PackageReference Include="NUnit3TestAdapter" Version="6.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NuciSecurity.HMAC\NuciSecurity.HMAC.csproj" />
+  </ItemGroup>
+</Project>
+```
+
+### NuciSecurity.HMAC.ArchitectureTests.csproj
+
+```xml
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>NuciSecurity.HMAC.ArchitectureTests</RootNamespace>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <ExcludeFromCodeCoverage>true</ExcludeFromCodeCoverage>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.3.0" />
+    <PackageReference Include="NUnit" Version="4.5.1" />
+    <PackageReference Include="NUnit3TestAdapter" Version="6.2.0" />
+    <PackageReference Include="TngTech.ArchUnitNET.NUnit" Version="0.13.5" />
   </ItemGroup>
 
   <ItemGroup>
