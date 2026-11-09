@@ -201,6 +201,10 @@ Paths:
 - `NuciSecurity.HMAC.ArchitectureTests/SourceFileConventionTests.cs`
 - `NuciSecurity.HMAC.ArchitectureTests/ProjectConventionTests.cs`
 - `NuciSecurity.HMAC.ArchitectureTests/SolutionConventionTests.cs`
+- `NuciSecurity.HMAC.ArchitectureTests/CodingConventionTests.cs`
+- `NuciSecurity.HMAC.ArchitectureTests/NamingConventionTests.cs`
+- `NuciSecurity.HMAC.ArchitectureTests/MemberOrganisationTests.cs`
+- `NuciSecurity.HMAC.ArchitectureTests/TypeDeclarationConventionTests.cs`
 - `NuciSecurity.HMAC.ArchitectureTests/ProductionArchitecture.cs`
 - `NuciSecurity.HMAC.ArchitectureTests/ArchitectureResources.cs`
 

@@ -29,7 +29,7 @@ namespace NuciSecurity.HMAC.ArchitectureTests
         {
             string[] typeNames = ProductionArchitecture.Assembly.GetTypes()
                 .Where(type => type.IsPublic)
-                .Select(type => type.FullName ?? type.Name)
+                .Select(GetTypeName)
                 .OrderBy(name => name, StringComparer.Ordinal)
                 .ToArray();
             Assert.That(typeNames, Is.Not.Empty, "The production assembly must expose public types.");
@@ -59,7 +59,7 @@ namespace NuciSecurity.HMAC.ArchitectureTests
 
             Assert.That(references, Is.Not.Empty, "The production assembly references must be inspected.");
             Assert.That(
-                references.Select(reference => reference.Name ?? string.Empty).Where(reference =>
+                references.Select(GetReferenceName).Where(reference =>
                     reference.Contains(forbiddenAssembly, StringComparison.OrdinalIgnoreCase)),
                 Is.Empty,
                 $"The production assembly must not reference {forbiddenAssembly}.");
@@ -81,7 +81,7 @@ namespace NuciSecurity.HMAC.ArchitectureTests
 
             Assert.That(references, Is.Not.Empty, "The production assembly references must be inspected.");
             Assert.That(
-                references.Select(reference => reference.Name ?? string.Empty).Where(reference =>
+                references.Select(GetReferenceName).Where(reference =>
                     !allowedAssemblies.Contains(reference, StringComparer.Ordinal)),
                 Is.Empty,
                 "The production assembly must only reference the documented assemblies.");
@@ -237,7 +237,7 @@ namespace NuciSecurity.HMAC.ArchitectureTests
 
             Assert.That(references, Is.Not.Empty, "The production assembly references must be inspected.");
             Assert.That(
-                references.Select(reference => reference.Name ?? string.Empty).Where(IsTestDependency),
+                references.Select(GetReferenceName).Where(IsTestDependency),
                 Is.Empty,
                 "The production assembly must remain independent of test assemblies and frameworks.");
         }
@@ -252,6 +252,26 @@ namespace NuciSecurity.HMAC.ArchitectureTests
 
         private static void AssertHasProductionTypes()
             => AssertHasTypes(ProductionArchitecture.ProductionTypes, "the production boundary");
+
+        private static string GetTypeName(Type type)
+        {
+            if (type.FullName is null)
+            {
+                return type.Name;
+            }
+
+            return type.FullName;
+        }
+
+        private static string GetReferenceName(AssemblyName reference)
+        {
+            if (reference.Name is null)
+            {
+                return string.Empty;
+            }
+
+            return reference.Name;
+        }
 
         private static bool IsCompilerGenerated(FieldInfo field)
             => field.IsDefined(typeof(CompilerGeneratedAttribute), false) ||

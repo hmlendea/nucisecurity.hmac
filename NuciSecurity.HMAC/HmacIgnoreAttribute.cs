@@ -6,5 +6,5 @@ namespace NuciSecurity.HMAC
     /// Attribute to mark properties that should be ignored when generating HMAC tokens.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
-    public class HmacIgnoreAttribute : Attribute { }
+    public sealed class HmacIgnoreAttribute : Attribute { }
 }

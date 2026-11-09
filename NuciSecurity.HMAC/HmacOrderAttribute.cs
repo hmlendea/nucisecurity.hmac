@@ -7,7 +7,7 @@ namespace NuciSecurity.HMAC
     /// </summary>
     /// <param name="order">The order in which the property should be processed.</param>
     [AttributeUsage(AttributeTargets.Property)]
-    public class HmacOrderAttribute(int order) : Attribute
+    public sealed class HmacOrderAttribute(int order) : Attribute
     {
         public int Order { get; } = order;
     }

@@ -8,6 +8,9 @@ namespace NuciSecurity.HMAC.ArchitectureTests
 {
     internal static class ArchitectureResources
     {
+        // Narrowly scoped exception: these values are used as [TestCase(...)] attribute
+        // arguments, which require compile-time constants, so they cannot be static
+        // properties. They are the only production-style constants in the codebase.
         internal const string ProductionSourcePrefix = "ProductionSources/";
         internal const string UnitTestSourcePrefix = "UnitTestSources/";
         internal const string ArchitectureTestSourcePrefix = "ArchitectureTestSources/";

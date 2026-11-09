@@ -2,7 +2,7 @@
 
 ## Overview
 
-NuciSecurity.HMAC uses **NUnit 4.5.1** for unit testing with **7 test cases** covering all major functionality, and **NUnit + ArchUnit.NET + Roslyn** for architecture testing with **56 test cases** enforcing the documented architectural boundaries and file conventions.
+NuciSecurity.HMAC uses **NUnit 4.5.1** for unit testing with **7 test cases** covering all major functionality, and **NUnit + ArchUnit.NET + Roslyn** for architecture testing with **144 test cases** enforcing the documented architectural boundaries and code conventions.
 
 ## Test Strategy
 
@@ -10,7 +10,7 @@ NuciSecurity.HMAC uses **NUnit 4.5.1** for unit testing with **7 test cases** co
 
 ```
 ┌───────────────────────────┐
-│  Architecture Tests (56)  │  - NuciSecurity.HMAC.ArchitectureTests
+│  Architecture Tests (144) │  - NuciSecurity.HMAC.ArchitectureTests
 │  ┌──────────────────────┐ │
 │  │ Dependency Boundaries│ │
 │  │ Source Conventions   │ │
@@ -39,7 +39,7 @@ NuciSecurity.HMAC uses **NUnit 4.5.1** for unit testing with **7 test cases** co
 | HmacValidator | 3 | 100% |
 | Attributes | 0 (tested via components) | N/A |
 | Error handling | 7 (via exceptions) | 100% |
-| Architecture boundaries | 56 | Documented rules only |
+| Architecture boundaries | 144 | Documented rules only |
 
 ## Test Organization
 
@@ -63,6 +63,10 @@ NuciSecurity.HMAC.ArchitectureTests/
 ├── SolutionConventionTests.cs
 ├── ProductionArchitecture.cs
 ├── ArchitectureResources.cs
+├── CodingConventionTests.cs
+├── MemberOrganisationTests.cs
+├── NamingConventionTests.cs
+├── TypeDeclarationConventionTests.cs
 ├── NuciSecurity.HMAC.ArchitectureTests.csproj
 └── obj/ (generated)
 ```
@@ -72,7 +76,7 @@ NuciSecurity.HMAC.ArchitectureTests/
 1. **Token Generation Tests** (4 cases)
 2. **Token Validation Tests** (3 cases)
 3. **Error Handling Tests** (7 cases via exceptions)
-4. **Architecture Tests** (56 cases)
+4. **Architecture Tests** (144 cases)
 
 ### Architecture Test Fixtures
 
@@ -82,6 +86,10 @@ NuciSecurity.HMAC.ArchitectureTests/
 | `SourceFileConventionTests` | One type per file, filename/type match, block namespaces, no regions, no nullable directives | Roslyn syntax analysis |
 | `ProjectConventionTests` | Required project properties, alphabetical package references, test flags, project references, no `InternalsVisibleTo` | XML parsing |
 | `SolutionConventionTests` | SDK-style solution structure, project ordering, no XML declaration, no `Version` element | XML parsing |
+| `CodingConventionTests` | Explicit types, no ternaries/tuples/`??`, no preview features, braces, parameter limits, XML documentation | Roslyn syntax analysis |
+| `NamingConventionTests` | PascalCase, interface prefixes, private field names, boolean names, built-in aliases | Roslyn syntax analysis |
+| `MemberOrganisationTests` | Explicit accessibility, member ordering, whitespace, using ordering | Roslyn syntax and source analysis |
+| `TypeDeclarationConventionTests` | No partial/init/const declarations, sealed classes, namespace placement | Roslyn syntax analysis |
 
 The architecture tests load the production assembly explicitly, exclude test assemblies, and reuse the loaded architecture for the whole run. Production sources and project files are embedded as resources so the checks are deterministic, environment-agnostic, and machine-agnostic.
 

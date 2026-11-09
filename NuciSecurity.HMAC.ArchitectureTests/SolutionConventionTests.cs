@@ -10,7 +10,7 @@ namespace NuciSecurity.HMAC.ArchitectureTests
     [TestFixture]
     public sealed class SolutionConventionTests
     {
-        private const string SolutionPath = "NuciSecurity.HMAC.slnx";
+        private static string SolutionPath => "NuciSecurity.HMAC.slnx";
 
         [Test]
         public void GivenSolution_WhenLoaded_ThenItUsesTheSdkStyleFormat()
@@ -77,7 +77,7 @@ namespace NuciSecurity.HMAC.ArchitectureTests
 
             string[] paths = solution.Descendants()
                 .Where(element => string.Equals(element.Name.LocalName, "Project", StringComparison.Ordinal))
-                .Select(project => (string?)project.Attribute("Path") ?? string.Empty)
+                .Select(project => GetAttributeValue(project, "Path"))
                 .ToArray();
 
             Assert.That(paths, Is.EqualTo(new[]
@@ -93,5 +93,17 @@ namespace NuciSecurity.HMAC.ArchitectureTests
                 ArchitectureResources.ReadResource(
                     ArchitectureResources.ProjectFilePrefix,
                     SolutionPath));
+
+        private static string GetAttributeValue(XElement element, string attributeName)
+        {
+            XAttribute? attribute = element.Attribute(attributeName);
+
+            if (attribute is null)
+            {
+                return string.Empty;
+            }
+
+            return attribute.Value;
+        }
     }
 }

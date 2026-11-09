@@ -10,13 +10,13 @@ namespace NuciSecurity.HMAC.ArchitectureTests
     [TestFixture]
     public sealed class ProjectConventionTests
     {
-        private const string ProductionProjectPath = "NuciSecurity.HMAC/NuciSecurity.HMAC.csproj";
-        private const string UnitTestProjectPath = "NuciSecurity.HMAC.UnitTests/NuciSecurity.HMAC.UnitTests.csproj";
-        private const string ArchitectureTestProjectPath = "NuciSecurity.HMAC.ArchitectureTests/NuciSecurity.HMAC.ArchitectureTests.csproj";
+        private static readonly string ProductionProjectPath = "NuciSecurity.HMAC/NuciSecurity.HMAC.csproj";
+        private static readonly string UnitTestProjectPath = "NuciSecurity.HMAC.UnitTests/NuciSecurity.HMAC.UnitTests.csproj";
+        private static readonly string ArchitectureTestProjectPath = "NuciSecurity.HMAC.ArchitectureTests/NuciSecurity.HMAC.ArchitectureTests.csproj";
 
-        [TestCase(ProductionProjectPath)]
-        [TestCase(UnitTestProjectPath)]
-        [TestCase(ArchitectureTestProjectPath)]
+        [TestCase("NuciSecurity.HMAC/NuciSecurity.HMAC.csproj")]
+        [TestCase("NuciSecurity.HMAC.UnitTests/NuciSecurity.HMAC.UnitTests.csproj")]
+        [TestCase("NuciSecurity.HMAC.ArchitectureTests/NuciSecurity.HMAC.ArchitectureTests.csproj")]
         public void GivenProjects_WhenLoaded_ThenTheRequiredPropertiesAreDeclared(string projectPath)
         {
             XDocument project = LoadProject(projectPath);
@@ -42,15 +42,15 @@ namespace NuciSecurity.HMAC.ArchitectureTests
                 $"{projectPath}: nullable references must be explicitly enabled.");
         }
 
-        [TestCase(ProductionProjectPath)]
-        [TestCase(UnitTestProjectPath)]
-        [TestCase(ArchitectureTestProjectPath)]
+        [TestCase("NuciSecurity.HMAC/NuciSecurity.HMAC.csproj")]
+        [TestCase("NuciSecurity.HMAC.UnitTests/NuciSecurity.HMAC.UnitTests.csproj")]
+        [TestCase("NuciSecurity.HMAC.ArchitectureTests/NuciSecurity.HMAC.ArchitectureTests.csproj")]
         public void GivenProjects_WhenLoaded_ThenPackageReferencesAreAlphabetical(string projectPath)
         {
             XDocument project = LoadProject(projectPath);
 
             string[] packages = project.Descendants("PackageReference")
-                .Select(reference => (string?)reference.Attribute("Include") ?? string.Empty)
+                .Select(reference => GetAttributeValue(reference, "Include"))
                 .ToArray();
 
             Assert.That(packages, Is.Not.Empty, $"{projectPath}: no package references were found.");
@@ -60,8 +60,8 @@ namespace NuciSecurity.HMAC.ArchitectureTests
                 $"{projectPath}: package references must be ordered alphabetically.");
         }
 
-        [TestCase(UnitTestProjectPath)]
-        [TestCase(ArchitectureTestProjectPath)]
+        [TestCase("NuciSecurity.HMAC.UnitTests/NuciSecurity.HMAC.UnitTests.csproj")]
+        [TestCase("NuciSecurity.HMAC.ArchitectureTests/NuciSecurity.HMAC.ArchitectureTests.csproj")]
         public void GivenTestProjects_WhenLoaded_ThenTheTestFlagsAreDeclared(string projectPath)
         {
             XDocument project = LoadProject(projectPath);
@@ -154,16 +154,35 @@ namespace NuciSecurity.HMAC.ArchitectureTests
 
         private static string[] GetProjectReferences(XDocument project)
             => project.Descendants("ProjectReference")
-                .Select(reference => (string?)reference.Attribute("Include") ?? string.Empty)
+                .Select(reference => GetAttributeValue(reference, "Include"))
                 .Select(reference => reference.Replace('\\', '/'))
                 .ToArray();
+
+        private static string GetAttributeValue(XElement element, string attributeName)
+        {
+            XAttribute? attribute = element.Attribute(attributeName);
+
+            if (attribute is null)
+            {
+                return string.Empty;
+            }
+
+            return attribute.Value;
+        }
 
         private static string GetProperty(XDocument project, string name)
         {
             IEnumerable<XElement> elements = project.Descendants()
                 .Where(element => string.Equals(element.Name.LocalName, name, StringComparison.Ordinal));
 
-            return elements.FirstOrDefault()?.Value ?? string.Empty;
+            XElement? element = elements.FirstOrDefault();
+
+            if (element is null)
+            {
+                return string.Empty;
+            }
+
+            return element.Value;
         }
     }
 }

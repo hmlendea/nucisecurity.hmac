@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
@@ -9,7 +10,7 @@ using NuciExtensions;
 
 namespace NuciSecurity.HMAC
 {
-    public class HmacEncoder
+    public sealed class HmacEncoder
     {
         private static string StaticSalt => $"{nameof(NuciSecurity)}.{nameof(HMAC)}.{nameof(StaticSalt)}.8fc5307e-c10b-40d0-b710-de79e7954358";
         private static string FieldSeparator => "|#FieldSeparator#|";
@@ -51,7 +52,7 @@ namespace NuciSecurity.HMAC
         public static bool IsTokenValid<TObject>(string expectedToken, TObject obj, string sharedSecretKey) where TObject : class
             => HmacValidator.IsTokenValid(expectedToken, obj, sharedSecretKey);
 
-        static string GetStringForSigning<TObject>(TObject obj) where TObject : class
+        private static string GetStringForSigning<TObject>(TObject obj) where TObject : class
         {
             if (obj is null)
             {
@@ -60,7 +61,7 @@ namespace NuciSecurity.HMAC
 
             StringBuilder stringBuilder = new();
 
-            var propertiesToCompute = obj.GetType()
+            IEnumerable<PropertyInfo> propertiesToCompute = obj.GetType()
                 .GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Where(p => p.GetCustomAttribute<HmacIgnoreAttribute>() is null)
                 .Select(p => new
@@ -68,7 +69,7 @@ namespace NuciSecurity.HMAC
                     Property = p,
                     OrderAttr = p.GetCustomAttribute<HmacOrderAttribute>()
                 })
-                .OrderBy(x => x.OrderAttr?.Order ?? DefaultOrder)
+                .OrderBy(x => GetOrderValue(x.OrderAttr, DefaultOrder))
                 .ThenBy(x => x.Property.Name)
                 .Select(x => x.Property);
 
@@ -79,38 +80,65 @@ namespace NuciSecurity.HMAC
 
                 if (propertyValue is IEnumerable enumerable && propertyValue is not string)
                 {
-                    Type? elementType = property.PropertyType.IsGenericType
-                        ? property.PropertyType.GetGenericArguments()[0]
-                        : property.PropertyType.GetElementType();
+                    Type? elementType;
+
+                    if (property.PropertyType.IsGenericType)
+                    {
+                        elementType = property.PropertyType.GetGenericArguments()[0];
+                    }
+                    else
+                    {
+                        elementType = property.PropertyType.GetElementType();
+                    }
 
                     if (elementType is not null && elementType.IsClass && elementType != typeof(string))
                     {
                         StringBuilder nestedBuilder = new();
 
-                        foreach (var item in enumerable)
+                        foreach (object item in enumerable)
                         {
-                            nestedBuilder.Append(item is null ? EmptyValue : GetStringForSigning(item) + FieldSeparator);
+                            if (item is null)
+                            {
+                                nestedBuilder.Append(EmptyValue + FieldSeparator);
+                            }
+                            else
+                            {
+                                nestedBuilder.Append(GetStringForSigning(item) + FieldSeparator);
+                            }
                         }
 
                         value = nestedBuilder.ToString();
                     }
                     else
                     {
-                        var flatValues = enumerable
+                        IEnumerable<string> flatValues = enumerable
                             .Cast<object?>()
-                            .Select(item => item?.ToString() ?? EmptyValue);
+                            .Select(item => GetFlattenedItemValue(item, EmptyValue));
 
                         value = string.Join(FieldSeparator, flatValues);
                     }
                 }
                 else
                 {
-                    value = propertyValue switch
+                    if (propertyValue is DateTime dateTimeValue)
                     {
-                        DateTime dt => dt.ToString("O"),
-                        bool b => b.ToString().ToLowerInvariant(),
-                        _ => propertyValue?.ToString() ?? EmptyValue
-                    };
+                        value = dateTimeValue.ToString("O");
+                    }
+                    else if (propertyValue is bool boolValue)
+                    {
+                        value = boolValue.ToString().ToLowerInvariant();
+                    }
+                    else
+                    {
+                        if (propertyValue is null)
+                        {
+                            value = EmptyValue;
+                        }
+                        else
+                        {
+                            value = GetPropertyValue(propertyValue);
+                        }
+                    }
                 }
 
                 stringBuilder.Append(value + FieldSeparator);
@@ -119,7 +147,7 @@ namespace NuciSecurity.HMAC
             return stringBuilder.ToString();
         }
 
-        static string ComputeHmacToken(string stringForSigning, string sharedSecretKey)
+        private static string ComputeHmacToken(string stringForSigning, string sharedSecretKey)
         {
             ArgumentNullException.ThrowIfNullOrWhiteSpace(stringForSigning);
             ArgumentNullException.ThrowIfNullOrWhiteSpace(sharedSecretKey);
@@ -137,7 +165,9 @@ namespace NuciSecurity.HMAC
                 .Replace("+", "л");
         }
 
-        static byte[] PadBytesToAvoidBase64Equals(byte[] input, byte padByte = 0x00)
+        private static byte[] PadBytesToAvoidBase64Equals(byte[] input) => PadBytesToAvoidBase64Equals(input, 0x00);
+
+        private static byte[] PadBytesToAvoidBase64Equals(byte[] input, byte padByte)
         {
             int padLength = (3 - (input.Length % 3)) % 3;
 
@@ -157,7 +187,7 @@ namespace NuciSecurity.HMAC
             return padded;
         }
 
-        static string GetMd5Hash(string input)
+        private static string GetMd5Hash(string input)
         {
             byte[] hashBytes = MD5.HashData(Encoding.UTF8.GetBytes(input));
 
@@ -169,6 +199,50 @@ namespace NuciSecurity.HMAC
             }
 
             return sb.ToString();
+        }
+
+        private static int GetOrderValue(HmacOrderAttribute? orderAttr, int defaultOrder)
+        {
+            if (orderAttr is null)
+            {
+                return defaultOrder;
+            }
+
+            return orderAttr.Order;
+        }
+
+        private static string GetFlattenedItemValue(object? item, string emptyValue)
+        {
+            if (item is null)
+            {
+                return emptyValue;
+            }
+
+            string? toString = item.ToString();
+
+            if (toString is null)
+            {
+                return emptyValue;
+            }
+
+            return toString;
+        }
+
+        private static string GetPropertyValue(object? propertyValue)
+        {
+            if (propertyValue is null)
+            {
+                return EmptyValue;
+            }
+
+            string? toString = propertyValue.ToString();
+
+            if (toString is null)
+            {
+                return EmptyValue;
+            }
+
+            return toString;
         }
     }
 }
